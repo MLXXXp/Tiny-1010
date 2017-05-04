@@ -1,5 +1,17 @@
 # Arduboy 1010
-Just a little 1010 puzzle game. Here's how to play the current version.
+Just a little 1010 puzzle game.
+
+    Written by Mike Meyer (mwm@mired.org)
+    Original files from:
+https://chiselapp.com/user/mwm/repository/1010
+
+    Modified by Scott Allen to lower the RGB LED brightness
+    Modified version at:
+https://github.com/MLXXXp/Tiny-1010
+
+----------
+
+Here's how to play the current version.
 
 ## Moving mode
 Once you've selected a shape (see below), the arrow keys will move it

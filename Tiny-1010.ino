@@ -1,8 +1,35 @@
 /*
  * Tiny 1010 - a 1010 block puzzle game for the Arduboy.
  *
- * Copyright © 2016, Mike Meyer (mwm@mired.org)
+ * Copyright (c) 2016, Mike Meyer (mwm@mired.org)
  *
+ * Modifications to lower the LED brightness
+ * Copyright (c) 2016, Scott Allen
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the copyright holders nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ''AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
  * The 1010 block puzzle game involes placings shapes composed of square blocks
  * on a 10 x 10 game board so that they don't overlap with previously dropped
  * shapes. When a row or column is filled, the blocks on it are cleared and points
@@ -20,6 +47,13 @@
 Arduboy2 arduboy;
 
 /* Data structures */
+
+// LED brightness
+// off = 0. on value can be 1 for dimmest to 255 for brightest
+const byte RGB_LED_OFF = 0;
+const byte RED_LED_ON = 5;
+const byte GREEN_LED_ON = 5;
+const byte BLUE_LED_ON = 20;
 
 // The  board
 const byte BOARD_SIZE = 10;	// a board_size by board_size game
@@ -385,7 +419,7 @@ draw_game(void) {
      const shape *const s = &shapes[game.waiting[selected]];
      byte red, green, blue;
 
-     red = green = blue = RGB_OFF;
+     red = green = blue = RGB_LED_OFF;
 
      draw_board();
      arduboy.print(F("Score\n"));
@@ -400,7 +434,7 @@ draw_game(void) {
           draw_msg("1010 v0.96\n  by mwm\n\nPress A");
           break;
      case DONE:
-          blue = RGB_ON;
+          blue = BLUE_LED_ON;
           // Fall through
      case MENU:
           draw_menu();
@@ -427,14 +461,14 @@ draw_game(void) {
                       27 - s->height * BLOCK_SIZE / 2);
           if (state == MOVING) {
                if ((can_place = shape_clear(s, game.x, game.y)))
-                    green = RGB_ON;
+                    green = GREEN_LED_ON;
                else
-                    red = RGB_ON;
+                    red = RED_LED_ON;
                     
                draw_shape(s, game.x, game.y);
           }
      }
-     arduboy.digitalWriteRGB(red, green, blue);
+     arduboy.setRGBled(red, green, blue);
      arduboy.display();
      return can_place;
 }
@@ -538,7 +572,7 @@ loop(void) {
                game.x = game.y = 0;
                state = MOVING;
           } else if (arduboy.justPressed(A_BUTTON)) {
-               arduboy.digitalWriteRGB(RGB_ON, RGB_OFF, RGB_OFF);
+               arduboy.setRGBled(RED_LED_ON, RGB_LED_OFF, RGB_LED_OFF);
                if (find_clear(s))
                     state = MOVING;
           }
